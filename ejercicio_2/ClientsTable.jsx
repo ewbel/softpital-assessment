@@ -24,6 +24,7 @@ import ClientFilters from './ClientFilters';
 import ExpandedClientsViewTable from './ExpandedClientsViewTable.jsx';
 import { DashboardContext } from '../../../context/Context';
 import { buildClientColumns } from './columns/ClientColumns.jsx';
+import { useClientFilters } from './hooks/useClientFilters';
 
 // Detecta si el usuario está en un dispositivo móvil
 function isMobileDevice() {
@@ -70,58 +71,7 @@ const ClientsTable = (props) => {
       [props.inv_data]
   );
 
-  const filteredAndSortedData = useMemo(() => {
-    if (!rawData || !Array.isArray(rawData)) return [];
-
-    // Si no hay filtro, mostrar todos los clientes
-    let searchValue = filters.searchValue;
-    // Si el filtro está vacío, mostrar todos los clientes
-    const isEmpty =
-      !filters.filterType ||
-      searchValue == null ||
-      (Array.isArray(searchValue) && searchValue.length === 0) ||
-      (typeof searchValue === 'string' && searchValue.trim() === '');
-    if (isEmpty) {
-      return [...rawData].sort((a, b) => {
-        switch (filters.sortBy) {
-          case 0:
-            return String(a.clientName || '').localeCompare(String(b.clientName || ''));
-          case 1:
-            return String(b.clientName || '').localeCompare(String(a.clientName || ''));
-          default:
-            return 0;
-        }
-      });
-    }
-
-    // Filtrar por el tipo y valor seleccionado (soporta array y string, igual que Biomedical/Tickets)
-    const searchResults = rawData.filter((client) => {
-      const fieldValue = String(client[filters.filterType] || '').toLowerCase();
-      if (Array.isArray(searchValue)) {
-        // Si el array tiene solo un valor, filtra por coincidencia parcial
-        if (searchValue.length === 1) {
-          return fieldValue.includes(searchValue[0].toLowerCase());
-        }
-        // Si el array tiene varios valores, filtra si alguno coincide exactamente
-        return searchValue.some(val => fieldValue === val.toLowerCase());
-      } else if (typeof searchValue === 'string') {
-        return fieldValue.includes(searchValue.toLowerCase());
-      }
-      return true;
-    });
-
-    // Ordenamiento
-    return [...searchResults].sort((a, b) => {
-      switch (filters.sortBy) {
-        case 0:
-          return String(a[filters.filterType] || '').localeCompare(String(b[filters.filterType] || ''));
-        case 1:
-          return String(b[filters.filterType] || '').localeCompare(String(a[filters.filterType] || ''));
-        default:
-          return 0;
-      }
-    });
-  }, [filters, rawData]);
+  const filteredAndSortedData = useClientFilters(rawData, filters);
 
   // Actualizar el estado cuando cambien los datos filtrados
   //Deprecado por hacer un update de un valor que 
