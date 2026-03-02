@@ -1,17 +1,34 @@
-import React, {Fragment,useMemo,useState,useEffect, useContext} from 'react';
-import {useExpanded,useTable,useFilters,useGlobalFilter,usePagination} from 'react-table';
-import { Col, Row, Table} from 'react-bootstrap';
+import React, {
+  Fragment,
+  useMemo,
+  useState,
+  useEffect,
+  useContext
+} from 'react';
+import {
+  useExpanded,
+  useTable,
+  useFilters,
+  useGlobalFilter,
+  usePagination
+} from 'react-table';
+import { 
+  Col,
+  Row,
+  Table
+} from 'react-bootstrap';
 import 'regenerator-runtime';
 import _get from 'lodash/get';
 import Pagination from '../../../components/elements/advance-table/Pagination';
 import ClientFilters from './ClientFilters';
+import ExpandedClientsViewTable from './ExpandedClientsViewTable.jsx';
+import { DashboardContext } from '../../../context/Context';
+
 // Detecta si el usuario está en un dispositivo móvil
 function isMobileDevice() {
   if (typeof window === 'undefined') return false;
   return /Mobi|Android|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i.test(navigator.userAgent);
-}
-import ExpandedClientsViewTable from './ExpandedClientsViewTable.jsx';
-import { DashboardContext } from '../../../context/Context';
+};
 
 const ClientsTable = (props) => {
   let rawData = props.inv_data;
@@ -302,6 +319,7 @@ const ClientsTable = (props) => {
               ''
             )}
           </div>
+          
           {pageCount > 1 && (
             <Pagination
               previousPage={previousPage}
