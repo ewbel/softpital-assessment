@@ -97,7 +97,7 @@ const ClientsTable = (props) => {
   },[currentLocationId,locations])
   
 
-  const columns = useMemo(() => allData, []);
+  const columns = useMemo(() => allData, [allData]);
 
   useEffect(() => {
     if (props.inv_data && Array.isArray(props.inv_data)) {
