@@ -155,11 +155,13 @@ const ClientsTable = (props) => {
   }, [filters, rawData]);
 
   // Actualizar el estado cuando cambien los datos filtrados
-  useEffect(() => {
+  //Deprecado por hacer un update de un valor que 
+  //ya esta calculandose en el scope(filteredAndSortedData), lo que causaba un render innecesario
+  /* useEffect(() => {
     setEquipmentData(filteredAndSortedData);
-  }, [filteredAndSortedData]);
+  }, [filteredAndSortedData]); */
 
-  const data = useMemo(() => equipmentData || [], [equipmentData, currentLocationId]);
+  const data = useMemo(() => filteredAndSortedData, [filteredAndSortedData]);
 
   const {
     getTableProps,
@@ -252,7 +254,7 @@ const ClientsTable = (props) => {
                   </tr>
                 ))}
               </thead>
-              {equipmentData && equipmentData.length > 0 ? (
+              {filteredAndSortedData && filteredAndSortedData.length > 0 ? (
                 <tbody {...getTableBodyProps()}>
                   {page.map((row) => {
                     prepareRow(row);
@@ -292,7 +294,7 @@ const ClientsTable = (props) => {
                 ''
               )}
             </Table>
-            {!!equipmentData && equipmentData.length <= 0 ? (
+            {!filteredAndSortedData.length ? (
               <Row className="text-center p-0 m-0">
                 <span className="text-center text-secondary py-5 fw-bold">
                   Aún no hay clientes registrados
