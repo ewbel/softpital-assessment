@@ -144,18 +144,6 @@ const ClientsTable = (props) => {
         return fieldValue.includes(searchValue.toLowerCase());
       }
       return true;
-
-      // Filtro por estado
-      const statusMatch =
-        filters.status === '' ||
-        (filters.status === true
-          ? client?.status === 'Vigente'
-          : client?.status === 'No Vigente');
-      
-      const locationMatch =
-          filters.location === '' ||
-          filters.location === getLocationName(client.locationId);
-      return searchMatch && statusMatch && locationMatch;
     });
 
     // Ordenamiento
@@ -319,7 +307,7 @@ const ClientsTable = (props) => {
               ''
             )}
           </div>
-          
+
           {pageCount > 1 && (
             <Pagination
               previousPage={previousPage}
