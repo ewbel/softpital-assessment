@@ -1,24 +1,20 @@
-function createRateLimiter(limit, winsowsMs) {
+function createRateLimiter(limit, windowsMs) {
   const requests = {};
 
   return function(userId) {
     const now = Date.now();
 
-    if(!requests[userId]) {
-      requests[userId] = [];
+    if(!requests[userId] || now > requests[userId].resetTime) {
+      requests[userId] = { count: 0, resetTime: now + windowsMs };
     }
 
-    requests[userId] = requests[userId].filter(
-      (timestamp) => now - timestamp < winsowsMs
-    );
-
-    if(requests[userId].length >= limit) {
+    if(requests[userId].count >= limit) {
       return false;
     }
 
-    requests[userId].push(now);
+    requests[userId].count++;
     return true;
-  } 
+  };
 };
 
 module.exports = { 
