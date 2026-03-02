@@ -200,11 +200,7 @@ const ClientsTable = (props) => {
 
   const { pageIndex = 0 } = state || {};
 
-  const dinamicHeight = () => {
-    return pageCount > 1
-      ? '64vh'
-      : '67.3vh';
-  };
+  const tableHeight = pageCount > 1 ? '64vh' : '67.3vh';
 
   return (
     <Fragment>
@@ -227,7 +223,7 @@ const ClientsTable = (props) => {
             className="table-responsive border-0 hide-scrollbar"
             style={{
               overflowY: 'scroll',
-              height: dinamicHeight(),
+              height: tableHeight,
             }}
           >
             <Table
