@@ -30,6 +30,15 @@ function isMobileDevice() {
   return /Mobi|Android|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i.test(navigator.userAgent);
 };
 
+const ActionMenu = ({ row }) => {
+  return (
+    <i
+      className={`fi fs-3 fi-rs-angle-circle-${row.isExpanded ? 'up' : 'down'}`}
+      {...row.getToggleRowExpandedProps()}
+    />
+  );
+};
+
 const ClientsTable = (props) => {
   let rawData = props.inv_data;
   const {locations, currentLocationId} = useContext(DashboardContext)
@@ -38,17 +47,6 @@ const ClientsTable = (props) => {
 
   // Usar los filtros y setFilters recibidos por props, como en los otros módulos
   const { filters, setFilters } = props;
-
-  const ActionMenu = ({ row, fl }) => {
-    return (
-      <i
-        className={`fi fs-3 fi-rs-angle-circle-${
-          row.isExpanded ? 'up' : 'down'
-        }`}
-        {...row.getToggleRowExpandedProps()}
-      />
-    );
-  };
 
   const locationMap = React.useMemo(() => {
       const map = {};
