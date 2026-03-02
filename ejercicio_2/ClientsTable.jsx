@@ -40,7 +40,6 @@ const ActionMenu = ({ row }) => {
 };
 
 const ClientsTable = (props) => {
-  let rawData = props.inv_data;
   const {locations, currentLocationId} = useContext(DashboardContext)
   const [equipmentData, setEquipmentData] = useState(rawData);
   const [showFilter, setShowFilter] = useState(false);
@@ -56,10 +55,10 @@ const ClientsTable = (props) => {
       return map;
     }, [locations]);
   
-    const getLocationName = React.useCallback(
-      (locationId) => locationMap[locationId] ?? locationId,
-      [locationMap]
-    );
+  const getLocationName = React.useCallback(
+    (locationId) => locationMap[locationId] ?? locationId,
+    [locationMap]
+  );
 
   const allData = useMemo(()=>{
     const baseColumns = [
@@ -92,17 +91,15 @@ const ClientsTable = (props) => {
     ]
     return dynamicColumn ? [...baseColumns, dynamicColumn, ...remainingColumns] : [...baseColumns,...remainingColumns]
   
-  },[currentLocationId,locations])
+  },[currentLocationId,locations]);
+
+  const rawData = useMemo(() => (
+    Array.isArray(props.inv_data) ? props.inv_data : []
+    ),
+      [props.inv_data]
+  );
   
-
   const columns = useMemo(() => allData, [allData]);
-
-  useEffect(() => {
-    if (props.inv_data && Array.isArray(props.inv_data)) {
-      setEquipmentData(props.inv_data);
-      rawData = props.inv_data;
-    }
-  }, [props.inv_data]);
 
   const filteredAndSortedData = useMemo(() => {
     if (!rawData || !Array.isArray(rawData)) return [];
