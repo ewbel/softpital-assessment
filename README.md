@@ -13,6 +13,34 @@ Utilice un objeto para almacenar timestamps por usuario
 lo que nos ayuda a filtrar y saber la cantidad de llamadas
 del mismo comparandolo con los lapzos de tiempo que pasamos como param.
 
+### Cambio de estructura de datos
+La primer implementacion funcionaba pero tenia un problema,
+cada vez que llegaba un request se filtraba todo el array de timestamps
+del usuario, lo cual se vuelve ineficiente cuando hay muchos requests acumulados.
+
+Lo cambie a un objeto con `count` y `resetTime` por usuario, asi
+en lugar de filtrar el array completo solo verificamos si ya vencio
+la ventana y reseteamos o incrementamos el contador segun corresponda.
+```javascript
+// antes
+requests[userId] = requests[userId].filter(
+  (timestamp) => now - timestamp < windowMs
+);
+
+// despues
+if(!requests[userId] || now > requests[userId].resetTime) {
+  requests[userId] = { count: 0, resetTime: now + windowMs };
+}
+```
+
+### Posibles mejoras futuras
+- Si un usuario sigue intentando justo cuando vence la ventana
+  el `resetTime` se recalcula desde ese momento, lo que podria
+  darle un poco mas de tiempo del esperado. Lo ideal seria fijar
+  la ventana desde el primer request y no moverla
+- Agregar una limpieza periodica de usuarios inactivos para que el objeto
+  `requests` no acumule informacion innecesaria en memoria
+
 ## Ejercicio 2 - Refactor ClientsTable
 
 ### Decisiones tecnicas
