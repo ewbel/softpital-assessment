@@ -174,7 +174,6 @@ const ClientsTable = (props) => {
     gotoPage,
     pageCount,
     prepareRow,
-    setGlobalFilter,
   } = useTable(
     {
       columns,
