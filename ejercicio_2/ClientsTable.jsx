@@ -207,10 +207,6 @@ const ClientsTable = (props) => {
       : '67.3vh';
   };
 
-  const handleNameFilter = (e) => {
-    setFilters({ ...filters, name: e.target.value });
-  };
-
   return (
     <Fragment>
       {!isMobileDevice() && (
