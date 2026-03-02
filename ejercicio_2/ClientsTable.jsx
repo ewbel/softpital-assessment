@@ -23,6 +23,7 @@ import Pagination from '../../../components/elements/advance-table/Pagination';
 import ClientFilters from './ClientFilters';
 import ExpandedClientsViewTable from './ExpandedClientsViewTable.jsx';
 import { DashboardContext } from '../../../context/Context';
+import { buildClientColumns } from './columns/ClientColumns.jsx';
 
 // Detecta si el usuario está en un dispositivo móvil
 function isMobileDevice() {
@@ -41,8 +42,6 @@ const ActionMenu = ({ row }) => {
 
 const ClientsTable = (props) => {
   const {locations, currentLocationId} = useContext(DashboardContext)
-  const [equipmentData, setEquipmentData] = useState(rawData);
-  const [showFilter, setShowFilter] = useState(false);
 
   // Usar los filtros y setFilters recibidos por props, como en los otros módulos
   const { filters, setFilters } = props;
@@ -60,46 +59,16 @@ const ClientsTable = (props) => {
     [locationMap]
   );
 
-  const allData = useMemo(()=>{
-    const baseColumns = [
-      { accessor: 'clientNumber', Header: 'No. de cliente' },
-      { accessor: 'clientName', Header: 'Nombre' },
-      { accessor: 'inCharge', Header: 'Encargado' },
-      {
-        accessor: 'address',
-        Header: 'Dirección',
-        Cell: ({ value }) =>
-          value.length > 50 ? `${value.substring(0, 25)}...` : value,
-      },
-      { accessor: 'email', Header: 'Correo electrónico' },
-    ];
-    const dynamicColumn = currentLocationId === 'TODOS' 
-    ? {
-        id: 'sucursal-colum',
-        Header: 'Sucursal',
-        accessor: (row) => getLocationName (row.locationId)
-      }
-    : null;
-    const remainingColumns = [
-      {
-        accessor: 'action',
-        Header: '',
-        Cell: ({ row }) => {
-          return <ActionMenu row={row} fl="c" />;
-        },
-      },
-    ]
-    return dynamicColumn ? [...baseColumns, dynamicColumn, ...remainingColumns] : [...baseColumns,...remainingColumns]
-  
-  },[currentLocationId,locations]);
+  const columns = useMemo(
+    () => buildClientColumns({ currentLocationId, getLocationName, ActionMenu }),
+    [currentLocationId, getLocationName]
+  );
 
   const rawData = useMemo(() => (
     Array.isArray(props.inv_data) ? props.inv_data : []
     ),
       [props.inv_data]
   );
-  
-  const columns = useMemo(() => allData, [allData]);
 
   const filteredAndSortedData = useMemo(() => {
     if (!rawData || !Array.isArray(rawData)) return [];
